@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ data.titulo }} - LaButaca</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #ff6b35;
+            --secondary-color: #2c3e50;
+            --accent-color: #f39c12;
+            --dark-bg: #1a1a1a;
+            --light-bg: #ffffff;
+            --text-light: #ecf0f1;
+            --text-dark: #2c3e50;
+            --shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+         /* Navbar Styles - MEJORADO */
+         .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .navbar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .navbar-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            transition: transform 0.3s ease;
+        }
+
+        .navbar-logo:hover {
+            transform: scale(1.05);
+        }
+
+        .logo {
+            height: 60px;
+            width: auto;
+            max-width: 100%;
+        }
+
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary-color);
+        }
+
+        .navbar-menu {
+            display: flex;
+            list-style: none;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .navbar-menu a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .navbar-menu a:hover {
+            color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .navbar-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+
+        .navbar-menu a:hover::after {
+            width: 100%;
+        }
+
+        .user-buttons {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .user-welcome {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-right: 1rem;
+        }
+
+        .btn-login, .btn-register {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .btn-login:hover, .btn-register:hover {
+            background: #e55a2b;
+            transform: translateY(-2px);
+        }
+
+        .btn-register {
+            background-color: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .btn-register:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-logout {
+            background-color: transparent;
+            border: 2px solid #e74c3c;
+            color: #e74c3c;
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-logout:hover {
+            background-color: #e74c3c;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+
+        /* Main Content */
+        .main-content {
+            margin-top: 100px;
+            padding: 2rem;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-title {
+            font-size: 3rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .page-subtitle {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 2rem;
+        }
+
+        /* Products Grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .product-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 15px;
+            margin-bottom: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .product-card:hover .product-image {
+            transform: scale(1.05);
+        }
+
+        .product-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .product-description {
+            color: #666;
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .quantity-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quantity-btn:hover {
+            background: #e55a2b;
+            transform: scale(1.1);
+        }
+
+        .quantity-input {
+            width: 60px;
+            text-align: center;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .quantity-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
+        }
+
+        .add-to-cart-btn {
+            width: 100%;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .add-to-cart-btn:hover {
+            background: #e55a2b;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.3);
+        }
+
+        /* Selected Products Section */
+        .selected-products {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 3rem;
+        }
+
+        .selected-products h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .selected-products ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .selected-products ul li {
+            background: rgba(255, 255, 255, 0.8);
+            margin-bottom: 0.8rem;
+            padding: 1rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 107, 53, 0.2);
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+        }
+
+        .selected-products ul li:hover {
+            background: rgba(255, 107, 53, 0.1);
+            transform: translateX(5px);
+        }
+
+        .confirm-button {
+            width: 100%;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 1.5rem;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .confirm-button:hover {
+            background: #e67e22;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(243, 156, 18, 0.3);
+        }
+
+        /* Bottom Actions Section */
+        .bottom-actions {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .action-btn {
+            display: inline-block;
+            padding: 1.2rem 2.5rem;
+            background: linear-gradient(135deg, var(--primary-color), #e55a2b);
+            color: white;
+            text-decoration: none;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(255, 107, 53, 0.4);
+            color: white;
+        }
+
+        .action-btn:hover::before {
+            left: 100%;
+        }
+
+        .tickets-btn {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.3);
+        }
+
+        .tickets-btn:hover {
+            box-shadow: 0 12px 35px rgba(52, 152, 219, 0.4);
+        }
+
+        /* Animación para la lista de productos */
+        @keyframes fadeIn {
+            from {
+                opacity: 0.7;
+                transform: translateX(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Estilos para el botón de eliminar */
+        .selected-products button[onclick*="removeProduct"]:hover {
+            background: #c0392b !important;
+            transform: scale(1.1);
+        }
+
+        /* Estilos para el botón de limpiar */
+        .clear-button {
+            width: 100%;
+            background: #95a5a6;
+            color: white;
+            border: none;
+            padding: 1.5rem;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .clear-button:hover {
+            background: #7f8c8d !important;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(149, 165, 166, 0.3);
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="mobile-toggle" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <a href="/" class="navbar-logo">
+                <img src="{{ url_for('static', filename='images/logo2.png') }}" alt="Logo CineDB" class="logo">
+                <span class="logo-text">LaButaca</span>
+            </a>
+
+            <ul class="navbar-menu" id="navbarMenu">
+                <li><a href="/peliculas">Películas</a></li>
+                <li><a href="/cines">Cines</a></li>
+                <li><a href="#promociones">Promociones</a></li>
+                <li><a href="/dulceria">Dulcería</a></li>
+
+                {% if data.user_name %}
+                    <li><a href="{{ url_for('mis_tickets') }}">Mis Tickets</a></li>
+                {% endif %}
+
+                <!-- Botones de usuario -->
+                <li class="user-buttons">
+                    {% if not data.user_name %}
+                        <a href="{{ url_for('login') }}" class="btn-login">Iniciar Sesión</a>
+                        <a href="{{ url_for('registrarse') }}" class="btn-register">Registrarse</a>
+                    {% else %}
+                        <span class="user-welcome">¡Hola, {{ data.user_name }}!</span>
+                        <a href="{{ url_for('logout') }}" class="btn-logout">Cerrar sesión</a>
+                    {% endif %}
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">{{ data.titulo }}</h1>
+            <p class="page-subtitle">Disfruta de nuestros deliciosos productos mientras ves tu película favorita</p>
+        </div>
+
+        <!-- Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="messages">
+                    {% for category, message in messages %}
+                        <div class="message {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Products Grid -->
+        <div class="products-grid">
+            {% for producto in data.productos %}
+                <div class="product-card">
+                    <img src="{{ url_for('static', filename='images/' + producto['imagen']) }}" 
+                         alt="{{ producto['nombre'] }}" 
+                         class="product-image">
+                    
+                    <h3 class="product-name">{{ producto['nombre'] }}</h3>
+                    <div class="product-price">S/. {{ "%.2f"|format(producto['precio']) }}</div>
+                    <p class="product-description">{{ producto['descripcion'] }}</p>
+                    
+                    <form class="product-form">
+                        <input type="hidden" name="producto_id" value="{{ producto['id'] }}">
+                        
+                        <div class="quantity-controls">
+                            <button type="button" class="quantity-btn" onclick="decreaseQuantity(this)">−</button>
+                            <input type="number" name="cantidad" class="quantity-input" value="1" min="1" max="10">
+                            <button type="button" class="quantity-btn" onclick="increaseQuantity(this)">+</button>
+                        </div>
+                        
+                        <button type="button" class="add-to-cart-btn" onclick="addProductToList({{ producto['id'] }}, '{{ producto['nombre']|escape }}', {{ producto['precio'] }}, this)">
+                            Comprar
+                        </button>
+                    </form>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Selected Products Section -->
+        <div class="selected-products" id="selectedProducts">
+            <h2>🛒 Productos seleccionados</h2>
+            <ul id="productList">
+                <li style="text-align: center; color: #666; font-style: italic;">No has seleccionado ningún producto aún</li>
+            </ul>
+            <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                <button class="confirm-button" id="confirmButton" onclick="confirmPurchase()" style="flex: 1;">
+                    Confirmar compra
+                </button>
+                <button class="clear-button" onclick="clearAllProducts()" style="flex: 1;">
+                    Limpiar lista
+                </button>
+            </div>
+        </div>
+
+        <!-- Bottom Actions -->
+        <div class="selected-products" id="dulceriaComprasSection" style="margin-bottom: 3rem;">
+            <h2 style="text-align:center;">🧾 Tus compras de dulcería</h2>
+            <div id="dulceriaComprasList">
+                <p style="text-align:center; color:#888;">Cargando compras...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    let selectedProducts = [];
+    let totalAmount = 0;
+
+    function addProductToList(id, name, price, button) {
+        let productCard = button.closest('.product-card');
+        let quantityInput = productCard ? productCard.querySelector('.quantity-input') : null;
+        if (!quantityInput) {
+            alert('No se pudo encontrar el campo de cantidad.');
+            return;
+        }
+        const quantity = parseInt(quantityInput.value);
+        const existingProductIndex = selectedProducts.findIndex(product => product.id === id);
+        if (existingProductIndex !== -1) {
+            selectedProducts[existingProductIndex].quantity += quantity;
+        } else {
+            selectedProducts.push({
+                id: id,
+                name: name,
+                price: price,
+                quantity: quantity
+            });
+        }
+        button.style.background = '#28a745';
+        button.textContent = '✓ Agregado';
+        setTimeout(() => {
+            button.style.background = '';
+            button.textContent = 'Comprar';
+        }, 1000);
+        updateProductList();
+    }
+
+    function updateProductList() {
+        const productList = document.getElementById('productList');
+        productList.innerHTML = '';
+        totalAmount = 0;
+        if (selectedProducts.length === 0) {
+            const emptyItem = document.createElement('li');
+            emptyItem.textContent = 'No has seleccionado ningún producto aún';
+            emptyItem.style.textAlign = 'center';
+            emptyItem.style.color = '#666';
+            emptyItem.style.fontStyle = 'italic';
+            productList.appendChild(emptyItem);
+            return;
+        }
+        selectedProducts.forEach((product, index) => {
+            const subtotal = product.price * product.quantity;
+            totalAmount += subtotal;
+            const listItem = document.createElement('li');
+            listItem.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span>${product.name} × ${product.quantity}</span>
+                        <button onclick="removeProduct(${index})" style="background: #e74c3c; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;" title="Eliminar producto">
+                            ×
+                        </button>
+                    </div>
+                    <span style="color: var(--primary-color); font-weight: bold;">S/. ${subtotal.toFixed(2)}</span>
+                </div>
+            `;
+            productList.appendChild(listItem);
+        });
+        const totalItem = document.createElement('li');
+        totalItem.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 2px solid var(--primary-color); padding-top: 0.5rem; margin-top: 0.5rem;">
+                <span style="font-size: 1.2rem; font-weight: bold;">Total:</span>
+                <span style="color: var(--primary-color); font-weight: bold; font-size: 1.3rem;">S/. ${totalAmount.toFixed(2)}</span>
+            </div>
+        `;
+        totalItem.style.background = 'rgba(255, 107, 53, 0.1)';
+        totalItem.style.borderColor = 'var(--primary-color)';
+        productList.appendChild(totalItem);
+    }
+
+    function removeProduct(index) {
+        if (index >= 0 && index < selectedProducts.length) {
+            selectedProducts.splice(index, 1);
+            updateProductList();
+            const productList = document.getElementById('productList');
+            productList.style.animation = 'fadeIn 0.3s ease';
+            setTimeout(() => {
+                productList.style.animation = '';
+            }, 300);
+        }
+    }
+
+    function clearAllProducts() {
+        if (selectedProducts.length === 0) {
+            alert('No hay productos para limpiar.');
+            return;
+        }
+        if (confirm('¿Estás seguro de que quieres eliminar todos los productos de la lista?')) {
+            selectedProducts = [];
+            totalAmount = 0;
+            updateProductList();
+            const productList = document.getElementById('productList');
+            productList.style.animation = 'fadeIn 0.5s ease';
+            setTimeout(() => {
+                productList.style.animation = '';
+            }, 500);
+        }
+    }
+
+    async function confirmPurchase() {
+        if (selectedProducts.length === 0) {
+            alert('No has seleccionado ningún producto para comprar.');
+            return;
+        }
+        const confirmMessage = `¿Confirmar compra por S/. ${totalAmount.toFixed(2)}?\n\nProductos:\n${selectedProducts.map(p => `• ${p.name} × ${p.quantity}`).join('\n')}`;
+        if (!confirm(confirmMessage)) {
+            return;
+        }
+        try {
+            const response = await fetch('/comprar_dulceria', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ productos: selectedProducts, total: totalAmount })
+            });
+            const data = await response.json();
+            if (response.ok && data.pdf_url) {
+                alert('¡Compra confirmada con éxito! 🎉\n\nPuedes descargar tu ticket PDF desde la lista de compras de dulcería.');
+            } else {
+                alert('Error al procesar la compra: ' + (data.error || 'Error desconocido.'));
+            }
+        } catch (e) {
+            alert('Error de conexión con el servidor.');
+        }
+        selectedProducts = [];
+        totalAmount = 0;
+        updateProductList();
+        cargarComprasDulceria();
+    }
+
+    function increaseQuantity(button) {
+        const input = button.previousElementSibling;
+        const currentValue = parseInt(input.value);
+        if (currentValue < 10) {
+            input.value = currentValue + 1;
+        }
+    }
+
+    function decreaseQuantity(button) {
+        const input = button.nextElementSibling;
+        const currentValue = parseInt(input.value);
+        if (currentValue > 1) {
+            input.value = currentValue - 1;
+        }
+    }
+
+    function renderDulceriaCompras(compras) {
+        const cont = document.getElementById('dulceriaComprasList');
+        if (!compras || compras.length === 0) {
+            cont.innerHTML = '<p style="text-align:center; color:#888;">No has realizado compras en la dulcería aún.</p>';
+            return;
+        }
+        let html = `<ul style='list-style:none; padding:0; margin:0;'>`;
+        compras.forEach(compra => {
+            html += `<li style="background:rgba(255,255,255,0.8);margin-bottom:0.8rem;padding:1rem;border-radius:12px;border:1px solid rgba(255,107,53,0.2);font-size:1.1rem;font-weight:600;color:var(--text-dark);display:flex;flex-direction:column;gap:0.5rem;">`;
+            html += `<div><strong>Productos:</strong><ul style='margin:0.3em 0 0.3em 1.2em;padding:0;'>`;
+            compra.productos.forEach(p => {
+                html += `<li style='font-weight:400;'>${p.name} × ${p.quantity}</li>`;
+            });
+            html += `</ul></div>`;
+            html += `<div style='display:flex;justify-content:space-between;align-items:center;gap:1em;'>`;
+            html += `<span style='color:var(--primary-color);font-weight:bold;'>Total: S/. ${compra.total.toFixed(2)}</span>`;
+            html += `<span style='font-size:0.98em;color:#666;'>${compra.fecha_compra.slice(0,19)}</span>`;
+            html += compra.pdf_url ? `<a href='${compra.pdf_url}' target='_blank' style='background:var(--accent-color);color:white;padding:0.5em 1.2em;border-radius:8px;text-decoration:none;font-weight:600;transition:all 0.2s;'>Descargar PDF</a>` : `<span style='color:#aaa;'>No disponible</span>`;
+            html += `</div>`;
+            html += `</li>`;
+        });
+        html += `</ul>`;
+        cont.innerHTML = html;
+    }
+    function cargarComprasDulceria() {
+        fetch('/dulceria/compras')
+            .then(r => r.json())
+            .then(data => renderDulceriaCompras(data.compras))
+            .catch(() => {
+                document.getElementById('dulceriaComprasList').innerHTML = '<p style="color:red;">Error al cargar compras.</p>';
+            });
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        updateProductList();
+        cargarComprasDulceria();
+    });
+    </script>
+</body>
+</html>

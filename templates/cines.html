@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ data.titulo }}</title>
+</head>
+<body>
+    <h1>{{ data.titulo }}</h1>
+
+    <h2>Salas Disponibles</h2>
+    <ul>
+        {% for sala in data.salas %}
+            <li>{{ sala['nombre'] }} - Capacidad: {{ sala['capacidad'] }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Películas en Proyección</h2>
+    <ul>
+        {% for pelicula in data.peliculas %}
+            <li>{{ pelicula['titulo'] }} - Sala: {{ pelicula['sala'] }} - Hora: {{ pelicula['hora_funcion'] }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

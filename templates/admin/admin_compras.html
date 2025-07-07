@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Compras - Admin</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .admin-title {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            font-size: 2rem;
+            font-weight: 900;
+            color: #ff6b35;
+            margin-bottom: 2rem;
+        }
+        .admin-card {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 4px 24px rgba(44,62,80,0.10);
+            padding: 2rem 2rem 1.5rem 2rem;
+            margin-bottom: 2rem;
+        }
+        @media (max-width: 900px) {
+            .admin-card { padding: 1rem 0.5rem; }
+            .admin-title { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-title">Admin Panel</div>
+        <a class="nav-link" href="{{ url_for('dashboard_admin') }}">Inicio</a>
+        <a class="nav-link" href="/admin/peliculas">Películas</a>
+        <a class="nav-link" href="/admin/usuarios">Usuarios</a>
+        <a class="nav-link active" href="/admin/compras">Compras</a>
+        <a class="nav-link" href="/admin/dulceria">Dulcería</a>
+        <a class="nav-link" href="{{ url_for('logout') }}">Cerrar sesión</a>
+    </div>
+    <div class="main-content">
+        <div class="container mt-4">
+            <div class="admin-title"><i class="fas fa-ticket-alt"></i> Gestión de Compras</div>
+            <div class="admin-card">
+                <h4 class="mb-3"><i class="fas fa-film"></i> Compras de Entradas</h4>
+                <div class="table-responsive mb-5">
+                    <table class="table table-bordered table-hover">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Usuario</th>
+                                <th>Película</th>
+                                <th>Cantidad</th>
+                                <th>Fecha</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for c in compras_entradas %}
+                            <tr>
+                                <td>{{ c.id }}</td>
+                                <td>{{ c.usuario }}</td>
+                                <td>{{ c.pelicula }}</td>
+                                <td>{{ c.cantidad }}</td>
+                                <td>{{ c.fecha_compra }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <h4 class="mb-3"><i class="fas fa-candy-cane"></i> Compras de Dulcería</h4>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Usuario</th>
+                                <th>Productos</th>
+                                <th>Total</th>
+                                <th>Fecha</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for d in compras_dulceria %}
+                            <tr>
+                                <td>{{ d.id }}</td>
+                                <td>{{ d.usuario }}</td>
+                                <td>
+                                    <ul>
+                                    {% for prod in d.productos %}
+                                        <li>{{ prod.name }} x{{ prod.quantity }} (S/. {{ prod.price }})</li>
+                                    {% endfor %}
+                                    </ul>
+                                </td>
+                                <td>S/. {{ d.total }}</td>
+                                <td>{{ d.fecha_compra }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

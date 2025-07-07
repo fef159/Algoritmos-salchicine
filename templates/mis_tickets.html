@@ -422,7 +422,7 @@
                 <li><a href="/peliculas">Películas</a></li>
                 <li><a href="/#cines">Cines</a></li>
                 <li><a href="#promociones">Promociones</a></li>
-                <li><a href="/#dulceria">Dulcería</a></li>
+                <li><a href="/dulceria">Dulcería</a></li>
 
                 {% if data.user_name %}
                     <li><a href="/mis_tickets">Mis Tickets</a></li>
@@ -474,6 +474,42 @@
             </div>
         {% else %}
             <p>No has comprado tickets aún. ¡Explora nuestras películas y reserva tus asientos!</p>
+        {% endif %}
+
+        <!-- Sección de compras de dulcería -->
+        <h3 style="font-size: 1.8rem; color: var(--text-light); text-align: left; margin-bottom: 2rem; font-weight: 800; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); animation: fadeInUp 1s ease;">Mis Compras de Dulcería</h3>
+        {% if dulceria and dulceria|length > 0 %}
+            <table style="width: 100%; background: rgba(255, 255, 255, 0.95); border-radius: 20px; overflow: hidden; box-shadow: var(--shadow); backdrop-filter: blur(10px); margin-bottom: 2rem; animation: fadeInUp 1s ease 0.2s both;">
+                <thead>
+                    <tr>
+                        <th>Productos</th>
+                        <th>Total</th>
+                        <th>Fecha de Compra</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for compra in dulceria %}
+                        <tr>
+                            <td>
+                                <ul style="margin:0; padding-left: 1.2em;">
+                                    {% for p in compra[1] %}
+                                        <li>{{ p.name }} × {{ p.quantity }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </td>
+                            <td>S/. {{ '%.2f'|format(compra[2]) }}</td>
+                            <td>{{ compra[3][:19] }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div style="text-align: center; margin-bottom: 1.5rem;">
+                <a href="/dulceria/tickets_pdf" class="btn-download">
+                    📥 Descargar Mis Tickets de Dulcería
+                </a>
+            </div>
+        {% else %}
+            <p>No has realizado compras en la dulcería aún.</p>
         {% endif %}
     </div>
 

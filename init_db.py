@@ -6,6 +6,9 @@ def init_db():
     conn = sqlite3.connect('database/salchichon.sqlite')
     c = conn.cursor()
 
+    # Eliminar la tabla Dulcería si ya existe (esto es para evitar el error)
+    c.execute('DROP TABLE IF EXISTS Dulceria')
+
     # Crear las tablas
     c.execute(''' 
     CREATE TABLE IF NOT EXISTS Usuarios (
@@ -21,7 +24,7 @@ def init_db():
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         usuario TEXT NOT NULL UNIQUE,
         contraseña TEXT NOT NULL,
-        email TEXT NOT NULL UNIQUE  -- Columna email agregada
+        email TEXT NOT NULL UNIQUE
     );
     ''')
 
@@ -37,11 +40,11 @@ def init_db():
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         titulo TEXT NOT NULL,
         descripcion TEXT,
-        duracion INTEGER NOT NULL,  -- Duración en minutos
+        duracion INTEGER NOT NULL,
         genero_id INTEGER,
         hora_funcion TIME,
-        imagen TEXT,  -- Campo para la imagen de la película
-        banner_pelicula TEXT,  -- Campo para el banner de la película
+        imagen TEXT,
+        banner_pelicula TEXT,
         FOREIGN KEY (genero_id) REFERENCES Generos(id)
     );
     ''')
@@ -58,8 +61,8 @@ def init_db():
     CREATE TABLE IF NOT EXISTS Asientos (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         sala_id INTEGER,
-        fila TEXT NOT NULL,  -- Letra de la fila (A, B, C, D, E, F)
-        numero_asiento INTEGER NOT NULL,  -- Número del asiento en la fila
+        fila TEXT NOT NULL,
+        numero_asiento INTEGER NOT NULL,
         estado TEXT DEFAULT 'disponible',
         FOREIGN KEY (sala_id) REFERENCES Salas(id),
         UNIQUE (sala_id, fila, numero_asiento)
@@ -75,6 +78,30 @@ def init_db():
         fecha_compra TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (usuario_id) REFERENCES Usuarios(id),
         FOREIGN KEY (pelicula_id) REFERENCES Peliculas(id)
+    );
+    ''')
+
+    # Crear la tabla Dulcería
+    c.execute(''' 
+    CREATE TABLE IF NOT EXISTS Dulceria (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nombre TEXT NOT NULL,
+        precio REAL NOT NULL,
+        descripcion TEXT,
+        imagen TEXT  -- Columna para la ruta de la imagen
+    );
+    ''')
+
+    # Crear la tabla ComprasDulceria para compras de dulcería
+    c.execute(''' 
+    CREATE TABLE IF NOT EXISTS ComprasDulceria (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        usuario_id INTEGER,
+        productos TEXT, -- JSON con los productos y cantidades
+        total REAL,
+        fecha_compra TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        pdf_path TEXT,
+        FOREIGN KEY (usuario_id) REFERENCES Usuarios(id)
     );
     ''')
 
@@ -128,10 +155,31 @@ def init_db():
     INSERT INTO Salas (nombre, capacidad) VALUES (?, ?);
     ''', [('Sala 1', 66), ('Sala 2', 66), ('Sala 3', 66)])
 
-    # Insertar el administrador solo si no existe
-    c.execute(''' 
-    INSERT OR IGNORE INTO Admin (usuario, contraseña, email) VALUES (?, ?, ?);
-    ''', ('admin', 'admin', 'admin@test.com'))  # Cambiar el email si es necesario
+    # Insertar productos de ejemplo en Dulcería con imágenes
+    c.executemany('''
+    INSERT INTO Dulceria (nombre, precio, descripcion, imagen) VALUES (?, ?, ?, ?);
+    ''', [
+        ('Palomitas Grandes', 15.00,
+         'Palomitas grandes con mantequilla', 'palomitas_grandes.jpg'),
+        ('Palomitas Medianas', 10.00,
+         'Palomitas medianas con mantequilla', 'palomitas_medianas.jpg'),
+        ('Refresco', 5.00, 'Refresco en lata o botella', 'refresco.jpg'),
+        ('Agua Mineral', 3.00, 'Botella de agua mineral', 'agua_mineral.jpg'),
+        ('Crispetas de Caramelo', 8.00,
+         'Crispetas dulces cubiertas con caramelo', 'crispetas_caramelo.jpg'),
+        ('Nachos con Queso', 12.00,
+         'Nachos acompañados con salsa de queso', 'nachos_con_queso.jpg')
+    ])
+
+    # Crear un admin por defecto si no existe
+    c.execute(
+        "SELECT COUNT(*) FROM Admin WHERE usuario = 'admin' OR email = 'admin@admin.com'")
+    if c.fetchone()[0] == 0:
+        c.execute("""
+        INSERT INTO Admin (usuario, contraseña, email)
+        VALUES ('admin', 'admin123', 'admin@admin.com')
+        """)
+    conn.commit()
 
     # Confirmar los cambios y cerrar la conexión
     conn.commit()
@@ -141,3 +189,12 @@ def init_db():
 if __name__ == '__main__':
     init_db()
     print("Base de datos y tablas creadas correctamente.")
+    # BLOQUE TEMPORAL PARA VERIFICAR ADMIN
+    conn = sqlite3.connect('database/salchichon.sqlite')
+    c = conn.cursor()
+    c.execute('SELECT * FROM Admin')
+    admins = c.fetchall()
+    print('Contenido de la tabla Admin:')
+    for admin in admins:
+        print(admin)
+    conn.close()

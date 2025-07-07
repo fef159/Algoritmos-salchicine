@@ -3,7 +3,7 @@ Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 Acepta escribiendo Y y presiona Enter.
 1. pip install virtualenv
 2. python -m venv env
-3. .\env\Scripts\actívate
+3. .\env\Scripts\actívate.ps1
 4. pip install Flask
 5. pip install reportlab
 6. python init_db.py 

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{% if pelicula %}Editar{% else %}Nueva{% endif %} Película - Admin</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-title">Admin Panel</div>
+        <a class="nav-link" href="{{ url_for('dashboard_admin') }}">Inicio</a>
+        <a class="nav-link active" href="/admin/peliculas">Películas</a>
+        <a class="nav-link" href="/admin/usuarios">Usuarios</a>
+        <a class="nav-link" href="/admin/compras">Compras</a>
+        <a class="nav-link" href="/admin/dulceria">Dulcería</a>
+        <a class="nav-link" href="{{ url_for('logout') }}">Cerrar sesión</a>
+    </div>
+    <div class="main-content">
+        <div class="container mt-4">
+            <h2>{% if pelicula %}Editar{% else %}Nueva{% endif %} Película</h2>
+            {% if error %}
+                <div class="alert alert-danger">{{ error }}</div>
+            {% endif %}
+            <form method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="titulo">Título *</label>
+                    <input type="text" class="form-control" id="titulo" name="titulo" required value="{{ pelicula.titulo if pelicula else '' }}">
+                </div>
+                <div class="form-group">
+                    <label for="descripcion">Descripción</label>
+                    <textarea class="form-control" id="descripcion" name="descripcion">{{ pelicula.descripcion if pelicula else '' }}</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="duracion">Duración (min) *</label>
+                    <input type="number" class="form-control" id="duracion" name="duracion" required value="{{ pelicula.duracion if pelicula else '' }}">
+                </div>
+                <div class="form-group">
+                    <label for="genero_id">Género</label>
+                    <select class="form-control" id="genero_id" name="genero_id">
+                        <option value="">-- Selecciona un género --</option>
+                        {% for g in generos %}
+                            <option value="{{ g.id }}" {% if pelicula and pelicula.genero_id == g.id %}selected{% endif %}>{{ g.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="hora_funcion">Hora de Función</label>
+                    <input type="time" class="form-control" id="hora_funcion" name="hora_funcion" value="{{ pelicula.hora_funcion if pelicula else '' }}">
+                </div>
+                <div class="form-group">
+                    <label for="imagen">Imagen {% if pelicula and pelicula.imagen %}(actual: {{ pelicula.imagen }}){% endif %}</label>
+                    <input type="file" class="form-control-file" id="imagen" name="imagen" accept="image/*">
+                </div>
+                <div class="form-group">
+                    <label for="banner_pelicula">Banner (texto)</label>
+                    <input type="text" class="form-control" id="banner_pelicula" name="banner_pelicula" value="{{ pelicula.banner_pelicula if pelicula else '' }}">
+                </div>
+                <button type="submit" class="btn btn-success">Guardar Película</button>
+                <a href="{{ url_for('admin_peliculas') }}" class="btn btn-secondary">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</body>
+</html> 

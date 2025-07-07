@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Dulcería - Admin</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .admin-title {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            font-size: 2rem;
+            font-weight: 900;
+            color: #ff6b35;
+            margin-bottom: 2rem;
+        }
+        .admin-card {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 4px 24px rgba(44,62,80,0.10);
+            padding: 2rem 2rem 1.5rem 2rem;
+            margin-bottom: 2rem;
+        }
+        .admin-table-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .btn-sm i { margin-right: 0.3em; }
+        @media (max-width: 900px) {
+            .admin-card { padding: 1rem 0.5rem; }
+            .admin-title { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-title">Admin Panel</div>
+        <a class="nav-link" href="{{ url_for('dashboard_admin') }}">Inicio</a>
+        <a class="nav-link" href="/admin/peliculas">Películas</a>
+        <a class="nav-link" href="/admin/usuarios">Usuarios</a>
+        <a class="nav-link" href="/admin/compras">Compras</a>
+        <a class="nav-link active" href="/admin/dulceria">Dulcería</a>
+        <a class="nav-link" href="{{ url_for('logout') }}">Cerrar sesión</a>
+    </div>
+    <div class="main-content">
+        <div class="container mt-4">
+            <div class="admin-title"><i class="fas fa-candy-cane"></i> Gestión de Productos de Dulcería</div>
+            <div class="admin-card">
+                <a href="{{ url_for('admin_dulceria_nuevo') }}" class="btn btn-success mb-3"><i class="fas fa-plus"></i> Nuevo Producto</a>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Precio</th>
+                                <th>Descripción</th>
+                                <th>Imagen</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for p in productos %}
+                            <tr>
+                                <td>{{ p.id }}</td>
+                                <td>{{ p.nombre }}</td>
+                                <td>S/. {{ p.precio }}</td>
+                                <td>{{ p.descripcion }}</td>
+                                <td>
+                                    {% if p.imagen %}
+                                        <img src="{{ url_for('static', filename='images/' ~ p.imagen) }}" alt="{{ p.nombre }}" width="60">
+                                    {% else %}
+                                        Sin imagen
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="admin-table-actions">
+                                        <a href="{{ url_for('admin_dulceria_editar', producto_id=p.id) }}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i> Editar</a>
+                                        <form action="{{ url_for('admin_dulceria_eliminar', producto_id=p.id) }}" method="POST" style="display:inline;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este producto?');">
+                                            <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Eliminar</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 
