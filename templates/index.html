@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ data['titulo'] }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #ff6b35;
+            --secondary-color: #2c3e50;
+            --accent-color: #f39c12;
+            --dark-bg: #1a1a1a;
+            --light-bg: #ffffff;
+            --text-light: #ecf0f1;
+            --text-dark: #2c3e50;
+            --shadow: 0 10px 30px rgba(0,0,0,0.3);
+            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Navbar Styles - MEJORADO */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .navbar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .navbar-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            transition: transform 0.3s ease;
+        }
+
+        .navbar-logo:hover {
+            transform: scale(1.05);
+        }
+
+        .logo {
+            height: 60px;
+            width: auto;
+            max-width: 100%;
+        }
+
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary-color);
+        }
+
+        .navbar-menu {
+            display: flex;
+            list-style: none;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .navbar-menu a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .navbar-menu a:hover {
+            color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .navbar-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+
+        .navbar-menu a:hover::after {
+            width: 100%;
+        }
+
+        .user-buttons {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .user-welcome {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-right: 1rem;
+        }
+
+        .btn-login, .btn-register {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .btn-login:hover, .btn-register:hover {
+            background: #e55a2b;
+            transform: translateY(-2px);
+        }
+
+        .btn-register {
+            background-color: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .btn-register:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-logout {
+            background-color: transparent;
+            border: 2px solid #e74c3c;
+            color: #e74c3c;
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-logout:hover {
+            background-color: #e74c3c;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Mobile Menu Toggle */
+        .mobile-toggle {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .mobile-toggle span {
+            width: 25px;
+            height: 3px;
+            background: var(--text-dark);
+            margin: 3px 0;
+            transition: 0.3s;
+        }
+
+        /* Header Section - Reducido */
+        .hero-section {
+            margin-top: 80px;
+            padding: 2rem 2rem;
+            text-align: center;
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4));
+        }
+
+        .hero-section h1 {
+            font-size: 2.5rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+            font-weight: 800;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            animation: fadeInUp 1s ease;
+        }
+
+        .hero-section p {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            opacity: 0.9;
+            animation: fadeInUp 1s ease 0.2s both;
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome-message {
+            font-size: 1rem;
+            margin-top: 0.5rem;
+            color: var(--accent-color);
+        }
+
+        /* Movie Carousel Section */
+        .movie-carousel {
+            padding: 2rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .carousel-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            position: relative;
+        }
+
+        .carousel-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 1rem 1.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+            z-index: 10;
+        }
+
+        .carousel-btn:hover {
+            background: #e55a2b;
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+
+        .movies-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 2rem;
+            align-items: center;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .movie-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .movie-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+        }
+
+        .movie-card.main-card {
+            transform: scale(1.1);
+            z-index: 5;
+        }
+
+        .movie-card.main-card:hover {
+            transform: scale(1.15) translateY(-10px);
+        }
+
+        .movie-card.side-card {
+            opacity: 0.8;
+            transform: scale(0.9);
+        }
+
+        .movie-card.side-card:hover {
+            opacity: 1;
+            transform: scale(0.95) translateY(-5px);
+        }
+
+        .movie-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .movie-card:hover .movie-image {
+            transform: scale(1.1);
+        }
+
+        .movie-content {
+            padding: 2rem;
+            position: relative;
+        }
+
+        .movie-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+
+        .movie-description {
+            color: #666;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            background: #e55a2b;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 107, 53, 0.4);
+        }
+
+        /* Promotions Section */
+        .promotions-section {
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin-top: 2rem;
+        }
+
+        .promotions-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            font-weight: 800;
+        }
+
+        .promotions-description {
+            text-align: center;
+            color: var(--text-light);
+            font-size: 1.2rem;
+            margin-bottom: 3rem;
+            opacity: 0.9;
+        }
+
+        .promotions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .promotion-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .promotion-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .promotion-image img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 15px;
+        }
+
+        .promotion-text h3 {
+            color: var(--text-dark);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .promotion-text p {
+            color: #666;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .promotion-btn {
+            background: var(--accent-color);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .promotion-btn:hover {
+            background: #e67e22;
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--dark-bg);
+            color: var(--text-light);
+            padding: 3rem 2rem 1rem;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .social-icon {
+            width: 45px;
+            height: 45px;
+            transition: transform 0.3s ease;
+        }
+
+        .social-icon:hover {
+            transform: scale(1.2) rotate(5deg);
+        }
+
+        .footer-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-column h5 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-column a {
+            color: var(--text-light);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-column a:hover {
+            color: var(--primary-color);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid #333;
+            opacity: 0.7;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .mobile-toggle {
+                display: flex;
+            }
+
+            .navbar-menu {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: white;
+                flex-direction: column;
+                padding: 1rem;
+                gap: 1rem;
+                box-shadow: var(--shadow);
+            }
+
+            .navbar-menu.active {
+                display: flex;
+            }
+
+            .hero-section h1 {
+                font-size: 2rem;
+            }
+
+            .hero-section p {
+                font-size: 1rem;
+            }
+
+            .movies-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .movie-card.main-card,
+            .movie-card.side-card {
+                transform: none;
+                opacity: 1;
+            }
+
+            .carousel-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .user-buttons {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .btn-login, .btn-register {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.9rem;
+            }
+
+            .promotions-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .promotion-card {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .footer-links {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-section {
+                padding: 1.5rem 1rem;
+            }
+
+            .hero-section h1 {
+                font-size: 1.8rem;
+            }
+
+            .movie-carousel {
+                padding: 1.5rem 1rem;
+            }
+
+            .movie-content {
+                padding: 1.5rem;
+            }
+
+            .promotions-section {
+                padding: 2rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="mobile-toggle" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <a href="/" class="navbar-logo">
+                <img src="{{ url_for('static', filename='images/logo2.png') }}" alt="Logo CineDB" class="logo">
+                <span class="logo-text">LaButaca</span>
+            </a>
+
+            <ul class="navbar-menu" id="navbarMenu">
+                <li><a href="/peliculas">Películas</a></li>
+                <li><a href="#">Cines</a></li>
+                <li><a href="#promociones">Promociones</a></li>
+                <li><a href="/#dulceria">Dulcería</a></li>
+
+                {% if data.user_name %}
+                    <li><a href="/mis_tickets">Mis Tickets</a></li>
+                {% endif %}
+
+                <!-- Botones de usuario -->
+                <li class="user-buttons">
+                    {% if not data.user_name %}
+                        <a href="/login" class="btn-login">Iniciar Sesión</a>
+                        <a href="/registrarse" class="btn-register">Registrarse</a>
+                    {% else %}
+                        <span class="user-welcome">¡Hola, {{ data.user_name }}!</span>
+                        <a href="{{ url_for('logout') }}" class="btn-logout">Cerrar sesión</a>
+                    {% endif %}
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero-section">
+        <h1>{{ data['titulo'] }}</h1>
+        <p>{{ data['bienvenida'] }}</p>
+        {% if data.user_name %}
+            <p class="welcome-message">
+                ¡Bienvenido de vuelta, {{ data.user_name }}!
+            </p>
+        {% endif %}
+    </header>
+
+<!-- Movie Carousel Section -->
+<div class="movie-carousel">
+    <div class="carousel-container">
+        <!-- Botón Anterior -->
+        <button class="carousel-btn" onclick="location.href='{{ url_for('ver_pelicula', indice=data['pelicula_anterior'].indice) }}'">
+            ◀ Anterior
+        </button>
+
+        <!-- Grid de Películas -->
+        <div class="movies-grid">
+            <!-- Película Lateral Izquierda -->
+            <div class="movie-card side-card">
+                <img src="{{ url_for('static', filename='images/' + data['pelicula_anterior'].imagen) }}" 
+                        class="movie-image" 
+                        alt="{{ data['pelicula_anterior'].titulo }}">
+
+                <div class="movie-content">
+                    <h5 class="movie-title">{{ data['pelicula_anterior'].titulo }}</h5>
+                    <p class="movie-description">{{ data['pelicula_anterior'].descripcion }}</p>
+                    <a href="{{ url_for('compra', pelicula_id=data['pelicula_anterior'].indice) }}" class="btn-primary">
+                        Comprar Entradas
+                    </a>
+                </div>
+            </div>
+
+            <!-- Película Principal (Centro) -->
+            <div class="movie-card main-card">
+                <img src="{{ url_for('static', filename='images/' + data['pelicula_actual'].imagen) }}" 
+                        class="movie-image" 
+                        alt="{{ data['pelicula_actual'].titulo }}">
+
+                <div class="movie-content">
+                    <h5 class="movie-title">{{ data['pelicula_actual'].titulo }}</h5>
+                    <p class="movie-description">{{ data['pelicula_actual'].descripcion }}</p>
+                    <a href="{{ url_for('compra', pelicula_id=data['pelicula_actual'].indice) }}" class="btn-primary">
+                        Comprar Entradas
+                    </a>
+                </div>
+            </div>
+
+            <!-- Película Lateral Derecha -->
+            <div class="movie-card side-card">
+                <img src="{{ url_for('static', filename='images/' + data['pelicula_siguiente'].imagen) }}" 
+                        class="movie-image" 
+                        alt="{{ data['pelicula_siguiente'].titulo }}">
+
+                <div class="movie-content">
+                    <h5 class="movie-title">{{ data['pelicula_siguiente'].titulo }}</h5>
+                    <p class="movie-description">{{ data['pelicula_siguiente'].descripcion }}</p>
+                    <a href="{{ url_for('compra', pelicula_id=data['pelicula_siguiente'].indice) }}" class="btn-primary">
+                        Comprar Entradas
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botón Siguiente -->
+        <button class="carousel-btn" onclick="location.href='{{ url_for('ver_pelicula', indice=data['pelicula_siguiente'].indice) }}'">
+            Siguiente ▶
+        </button>
+    </div>
+</div>
+
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById('navbarMenu');
+            menu.classList.toggle('active');
+        }
+
+        // Cerrar menú móvil al hacer clic en un enlace
+        document.querySelectorAll('.navbar-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('navbarMenu').classList.remove('active');
+            });
+        });
+    </script>
+</body>
+</html>
