@@ -517,6 +517,17 @@
 
             <div class="movie-info">
                 <h1>{{ data.titulo }}</h1>
+                {% if data.trailer_url %}
+                <div style="margin: 1.5rem 0; text-align: center;">
+                    <iframe width="560" height="315"
+                        src="https://www.youtube.com/embed/{{ data.trailer_url | replace('https://www.youtube.com/watch?v=', '') | replace('https://youtu.be/', '') }}"
+                        title="Tráiler de {{ data.titulo }}"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen>
+                    </iframe>
+                </div>
+                {% endif %}
                 <p><strong>Descripción:</strong> {{ data.descripcion }}</p>
 
                 <div class="info-grid">

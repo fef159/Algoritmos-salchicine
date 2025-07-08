@@ -405,9 +405,9 @@ def ver_detalles_pelicula(pelicula_id):
     conn = get_db()
     cursor = conn.cursor()
 
-    # Obtener los detalles completos de la película
+    # Obtener los detalles completos de la película, incluyendo trailer_url
     cursor.execute('''
-        SELECT id, titulo, descripcion, duracion, hora_funcion, imagen, banner_pelicula 
+        SELECT id, titulo, descripcion, duracion, hora_funcion, imagen, banner_pelicula, trailer_url 
         FROM Peliculas 
         WHERE id = ?
     ''', (pelicula_id,))
@@ -426,6 +426,7 @@ def ver_detalles_pelicula(pelicula_id):
             'hora_funcion': pelicula['hora_funcion'],
             'imagen': pelicula['imagen'],
             'banner_pelicula': pelicula['banner_pelicula'],
+            'trailer_url': pelicula['trailer_url'],
             # Agregar información de autenticación
             'user_name': session.get('user_name')
         }
@@ -990,6 +991,7 @@ def admin_pelicula_nueva():
         hora_funcion = request.form.get('hora_funcion') or None
         imagen = request.files.get('imagen')
         banner_pelicula = request.form.get('banner_pelicula') or None
+        trailer_url = request.form.get('trailer_url') or None
 
         if not titulo or not duracion:
             error = 'El título y la duración son obligatorios.'
@@ -1000,8 +1002,8 @@ def admin_pelicula_nueva():
             imagen_filename = secure_filename(imagen.filename)
             imagen.save(os.path.join('static', 'images', imagen_filename))
 
-        cursor.execute('''INSERT INTO Peliculas (titulo, descripcion, duracion, genero_id, hora_funcion, imagen, banner_pelicula) VALUES (?, ?, ?, ?, ?, ?, ?)''',
-                       (titulo, descripcion, duracion, genero_id, hora_funcion, imagen_filename, banner_pelicula))
+        cursor.execute('''INSERT INTO Peliculas (titulo, descripcion, duracion, genero_id, hora_funcion, imagen, banner_pelicula, trailer_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?)''',
+                       (titulo, descripcion, duracion, genero_id, hora_funcion, imagen_filename, banner_pelicula, trailer_url))
         conn.commit()
         conn.close()
         return redirect(url_for('admin_peliculas'))
@@ -1030,6 +1032,7 @@ def admin_pelicula_editar(pelicula_id):
         hora_funcion = request.form.get('hora_funcion') or None
         imagen = request.files.get('imagen')
         banner_pelicula = request.form.get('banner_pelicula') or None
+        trailer_url = request.form.get('trailer_url') or None
 
         if not titulo or not duracion:
             error = 'El título y la duración son obligatorios.'
@@ -1040,8 +1043,8 @@ def admin_pelicula_editar(pelicula_id):
             imagen_filename = secure_filename(imagen.filename)
             imagen.save(os.path.join('static', 'images', imagen_filename))
 
-        cursor.execute('''UPDATE Peliculas SET titulo=?, descripcion=?, duracion=?, genero_id=?, hora_funcion=?, imagen=?, banner_pelicula=? WHERE id=?''',
-                       (titulo, descripcion, duracion, genero_id, hora_funcion, imagen_filename, banner_pelicula, pelicula_id))
+        cursor.execute('''UPDATE Peliculas SET titulo=?, descripcion=?, duracion=?, genero_id=?, hora_funcion=?, imagen=?, banner_pelicula=?, trailer_url=? WHERE id=?''',
+                       (titulo, descripcion, duracion, genero_id, hora_funcion, imagen_filename, banner_pelicula, trailer_url, pelicula_id))
         conn.commit()
         conn.close()
         return redirect(url_for('admin_peliculas'))

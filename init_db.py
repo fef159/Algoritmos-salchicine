@@ -186,6 +186,21 @@ def init_db():
     conn.close()
 
 
+# --- Script para agregar la columna trailer_url si no existe ---
+def add_trailer_column():
+    conn = sqlite3.connect('database/salchichon.sqlite')
+    cursor = conn.cursor()
+    cursor.execute("PRAGMA table_info(Peliculas)")
+    columns = [col[1] for col in cursor.fetchall()]
+    if 'trailer_url' not in columns:
+        cursor.execute("ALTER TABLE Peliculas ADD COLUMN trailer_url TEXT")
+        print("Columna 'trailer_url' agregada correctamente.")
+    else:
+        print("La columna 'trailer_url' ya existe.")
+    conn.commit()
+    conn.close()
+
+
 if __name__ == '__main__':
     init_db()
     print("Base de datos y tablas creadas correctamente.")
@@ -198,3 +213,5 @@ if __name__ == '__main__':
     for admin in admins:
         print(admin)
     conn.close()
+    # Ejecutar el script para agregar la columna trailer_url
+    add_trailer_column()
