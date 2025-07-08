@@ -426,6 +426,8 @@ def ver_detalles_pelicula(pelicula_id):
             'hora_funcion': pelicula['hora_funcion'],
             'imagen': pelicula['imagen'],
             'banner_pelicula': pelicula['banner_pelicula'],
+            # Agregar información de autenticación
+            'user_name': session.get('user_name')
         }
         return render_template('detalle_pelicula.html', data=data)
     else:

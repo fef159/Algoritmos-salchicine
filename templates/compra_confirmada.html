@@ -29,8 +29,28 @@
             color: white;
         }
 
+        .navbar-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            transition: transform 0.3s ease;
+        }
+
+        .navbar-logo:hover {
+            transform: scale(1.05);
+        }
+
         .logo {
-            font-size: 2.5rem;
+            height: 60px;
+            width: auto;
+            max-width: 100%;
+        }
+
+        .logo-text {
+            font-size: 2rem;
+            font-weight: 800;
+            color: white;
         }
 
         .brand {
@@ -191,8 +211,10 @@
 </head>
 <body>
     <div class="header">
-        <div class="logo">🎬</div>
-        <div class="brand">CineDB</div>
+         <a href="/" class="navbar-logo">
+                <img src="{{ url_for('static', filename='images/logo2.png') }}" alt="Logo CineDB" class="logo">
+                <span class="logo-text">LaButaca</span>
+            </a>
     </div>
 
     <div class="confirmation-container">

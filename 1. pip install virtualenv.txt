@@ -6,6 +6,7 @@ Acepta escribiendo Y y presiona Enter.
 3. .\env\Scripts\actívate.ps1
 4. pip install Flask
 5. pip install reportlab
-6. python init_db.py 
-7.correr el programa
+6. Crear Carpeta Database
+7. python init_db.py 
+8.correr el programa
 python app.py 

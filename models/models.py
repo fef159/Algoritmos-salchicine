@@ -8,6 +8,7 @@ class NodoPelicula:
         self.imagen = imagen  # Ruta o nombre de archivo de la imagen de la película
         self.genero = genero  # Género de la película
 
+
 class ListaCircularEnlazada:
     def __init__(self):
         self.head = None  # Primer nodo
@@ -15,18 +16,18 @@ class ListaCircularEnlazada:
 
     def agregar_pelicula(self, titulo, descripcion, indice, imagen, genero):
         nuevo_nodo = NodoPelicula(titulo, descripcion, indice, imagen, genero)
-        
-        if not self.head:  # Si la lista está vacía
+
+        if self.head is None:  # Si la lista está vacía
             self.head = nuevo_nodo
             self.tail = nuevo_nodo
-            self.head.siguiente = self.head  # El siguiente de head es el mismo head (circular)
-            self.head.anterior = self.tail  # El anterior de head es tail
+            self.head.siguiente = self.head
+            self.head.anterior = self.head
         else:
-            self.tail.siguiente = nuevo_nodo
             nuevo_nodo.anterior = self.tail
-            nuevo_nodo.siguiente = self.head  # El siguiente del nuevo nodo apunta al head (circular)
-            self.head.anterior = nuevo_nodo  # El anterior del head apunta al nuevo nodo
-            self.tail = nuevo_nodo  # Ahora el nuevo nodo es el tail
+            nuevo_nodo.siguiente = self.head
+            self.tail.siguiente = nuevo_nodo
+            self.head.anterior = nuevo_nodo
+            self.tail = nuevo_nodo
 
     def obtener_primera_pelicula(self):
         return self.head
